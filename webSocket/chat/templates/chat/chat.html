@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <textarea id="chat"></textarea><br>
+    <input type="text" id="message" /><br>
+    <input type="button" id="send" value="SEND" />
+</body>
+</html>
+
+<script>
+    var roomName = "{{ room_name_json }}";
+
+    var chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/chat/' + roomName + '/');
+
+    chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        document.querySelector('#chat').value += (message + '\n');
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#message').focus();
+    document.querySelector('#message').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#send').click();
+        }
+    };
+
+    document.querySelector('#send').onclick = function(e) {
+        var messageInputDom = document.querySelector('#message');
+        var message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+
+        messageInputDom.value = '';
+    };
+</script>
