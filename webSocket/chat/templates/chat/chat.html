@@ -5,14 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-    <textarea id="chat"></textarea><br>
-    <input type="text" id="message" /><br>
+    <textarea id="chat" cols="100" rows="20"></textarea><br>
+    <input type="text" id="message" size="100" /><br>
     <input type="button" id="send" value="SEND" />
 </body>
 </html>
 
 <script>
-    var roomName = "{{ room_name_json }}";
+    var roomName = {{ room_name_json }};
 
     var chatSocket = new WebSocket(
         'ws://' + window.location.host + '/ws/chat/' + roomName + '/');
